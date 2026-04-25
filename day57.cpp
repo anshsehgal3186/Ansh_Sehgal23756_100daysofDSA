@@ -1,0 +1,89 @@
+#include <iostream>
+#include <queue>
+using namespace std;
+
+// Node structure
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int val) {
+        data = val;
+        left = right = NULL;
+    }
+};
+
+// Build tree from level order
+Node* buildTree(int arr[], int n) {
+    if (n == 0 || arr[0] == -1)
+        return NULL;
+
+    Node* root = new Node(arr[0]);
+    queue<Node*> q;
+    q.push(root);
+
+    int i = 1;
+
+    while (!q.empty() && i < n) {
+        Node* curr = q.front();
+        q.pop();
+
+        if (i < n && arr[i] != -1) {
+            curr->left = new Node(arr[i]);
+            q.push(curr->left);
+        }
+        i++;
+
+        if (i < n && arr[i] != -1) {
+            curr->right = new Node(arr[i]);
+            q.push(curr->right);
+        }
+        i++;
+    }
+
+    return root;
+}
+
+// Convert to mirror
+void mirrorTree(Node* root) {
+    if (root == NULL)
+        return;
+
+    // Swap children
+    Node* temp = root->left;
+    root->left = root->right;
+    root->right = temp;
+
+    // Recurse
+    mirrorTree(root->left);
+    mirrorTree(root->right);
+}
+
+// Inorder traversal
+void inorder(Node* root) {
+    if (root == NULL)
+        return;
+
+    inorder(root->left);
+    cout << root->data << " ";
+    inorder(root->right);
+}
+
+int main() {
+    int n;
+    cin >> n;
+
+    int arr[n];
+    for (int i = 0; i < n; i++) {
+        cin >> arr[i];
+    }
+
+    Node* root = buildTree(arr, n);
+
+    mirrorTree(root);
+
+    inorder(root);
+
+    return 0;
+}
